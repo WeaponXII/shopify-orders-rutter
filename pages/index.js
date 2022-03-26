@@ -14,7 +14,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 const PUBLIC_KEY =
   process.env.NEXT_PUBLIC_RUTTER_PUBLIC_KEY || "RUTTER_PUBLIC_KEY";
@@ -28,6 +28,8 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = React.useState("");
   const [dataErrorMessage, setDataErrorMessage] = React.useState("");
   const [generatedData, setGeneratedData] = React.useState(null);
+  const [productList, setProductList] = React.useState([]);
+  const [orderList, setOrderList] = React.useState([]);
   const router = useRouter();
   const { query } = router;
 
@@ -55,6 +57,23 @@ export default function Home() {
         })
     );
   };
+  const handleGetOrdersAndProducts = async (token) => {
+    setConnectLoading(true);
+    return (
+      axios
+        // Calls handler method in pages/api/rutter.js
+        .post("/api/rutter-utils", {
+          token,
+        })
+        .then((response) => {
+          setOrderList(response.data.orders);
+          setProductList(response.data.products);
+        })
+        .catch((e) => {
+          setErrorMessage(e?.response?.data?.error);
+        })
+    );
+  };
 
   const handleDisconnect = () => {
     try {
@@ -79,6 +98,7 @@ export default function Home() {
         if (rutterAccessToken) {
           setRutterConnected(true);
           setAccessToken(rutterAccessToken);
+          handleGetOrdersAndProducts(rutterAccessToken);
         }
       }
     } catch (e) {}
@@ -115,17 +135,30 @@ export default function Home() {
       });
   };
 
+  const month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const currentDate = DateTime.local();
+  const prevMonth = currentDate.minus({ months: 1 });
+  const prevprevMonth = prevMonth.minus({ months: 1 });
 
-  const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const currentDate = DateTime.local()
-  const prevMonth = currentDate.minus({ months: 1 })
-  const prevprevMonth = prevMonth.minus({ months: 1 })
-
-  console.log(currentDate.toJSDate().getMonth())
-
+  console.log(currentDate.toJSDate().getMonth());
+  console.log(orderList);
+  console.log(productList);
   const renderDashboard = () => {
     console.log(generatedData);
-  
+
     const data = [
       {
         name: currentDate.toJSDate().getMonth(),
@@ -153,7 +186,6 @@ export default function Home() {
         pending: count.pending,
       };
     });
-  
 
     return (
       <div style={{ marginTop: 20, paddingBottom: 100 }}>
@@ -177,8 +209,16 @@ export default function Home() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="total" name="Total Orders (All statuses)" fill="#8884d8" />
-            <Bar dataKey="pending" name="Pending Orders (Unpaid)" fill="#2994d8" />
+            <Bar
+              dataKey="total"
+              name="Total Orders (All statuses)"
+              fill="#8884d8"
+            />
+            <Bar
+              dataKey="pending"
+              name="Pending Orders (Unpaid)"
+              fill="#2994d8"
+            />
           </BarChart>
         </div>
         <div style={{ marginTop: 20 }}>
@@ -190,7 +230,10 @@ export default function Home() {
               data={[
                 { count: 0, name: month[prevprevMonth.toJSDate().getMonth()] },
                 { count: 0, name: month[prevMonth.toJSDate().getMonth()] },
-                { count: generatedData.products.length, name: month[currentDate.toJSDate().getMonth()] },
+                {
+                  count: generatedData.products.length,
+                  name: month[currentDate.toJSDate().getMonth()],
+                },
               ]}
               margin={{
                 top: 5,
@@ -213,9 +256,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div style={{ marginTop: 20 }}>
-        
-        </div>
+        <div style={{ marginTop: 20 }}></div>
       </div>
     );
   };
@@ -229,8 +270,8 @@ export default function Home() {
       <main>
         <h1> Dashboard</h1>
         <div className={styles.subtitle}>
-          Automticallly generate a dashboard for you to track sales & optimize your
-          sales process
+          Automatically generate a dashboard for you to track sales & optimize
+          your sales process
         </div>
 
         <hr />
@@ -244,20 +285,18 @@ export default function Home() {
             </Alert>
           )}
           {connectLoading && <Spinner></Spinner>}
-          {
-            rutterConnected ? (
-              <>
-                <Alert style={{ marginTop: 4 }} variant="success">
-                  Store connected.
-                </Alert>
-                <Button onClick={handleDisconnect}>Disconnect Store</Button>
-              </>
-            ) : (
-              <div style={{ marginTop: 2 }}>No store connected.</div>
-            )
-        
-          }
+          {rutterConnected ? (
+            <>
+              <Alert style={{ marginTop: 4 }} variant="success">
+                Store connected.
+              </Alert>
+              <Button onClick={handleDisconnect}>Disconnect Store</Button>
+            </>
+          ) : (
+            <div style={{ marginTop: 2 }}>No store connected.</div>
+          )}
         </div>
+        {/*
         {rutterConnected && (
           <div>
             <hr />
@@ -273,9 +312,7 @@ export default function Home() {
               >
                 Generate Simple Dashboards
               </Button>
-    
             </div>
-
           </div>
         )}
         {dataLoading && (
@@ -285,7 +322,9 @@ export default function Home() {
               Top-Level Metrics
             </div>
             <div>
-            These basic dashboards show your store's growth over time. Our team will continue to add additional dashboards in the future for free out of the box metrics!
+              These basic dashboards show your store's growth over time. Our
+              team will continue to add additional dashboards in the future for
+              free out of the box metrics!
             </div>
             {dataLoading ? (
               <Spinner animation="border"></Spinner>
@@ -300,8 +339,7 @@ export default function Home() {
           <div>
             <div>
               {" "}
-              <div style={{ marginTop: 12 }}>
-              </div>
+              <div style={{ marginTop: 12 }}></div>
             </div>{" "}
             {renderDashboard()}
           </div>
@@ -311,7 +349,7 @@ export default function Home() {
           <Alert style={{ marginTop: 8 }} variant="danger">
             {dataErrorMessage}
           </Alert>
-        )}
+        )}*/}
       </main>
     </div>
   );
