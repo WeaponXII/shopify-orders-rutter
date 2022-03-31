@@ -5,7 +5,7 @@ This repository uses the Rutter API to get order and product data from Shopify. 
 ## 1. Clone the repository
 ```
 $ git clone https://github.com/WeaponXII/shopify-orders-rutter.git
-$ cd rutter-shopify-starter
+$ cd shopify-orders-rutter
 ```
 
 ## 2. Set up your environment variables
