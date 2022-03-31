@@ -1,11 +1,11 @@
-# Rutter quickstart
+# Rutter Shopify Orders
 
-This repository accompanies Rutter's quickstart guide. This app is built on NextJS and uses the react-rutter-link library.
+This repository uses the Rutter API to get order and product data from Shopify. This app is built on NextJS and uses the react-rutter-link library.
 
 ## 1. Clone the repository
 ```
-$ git clone https://github.com/rutter/react-quickstart
-$ cd react-quickstart
+$ git clone https://github.com/WeaponXII/shopify-orders-rutter.git
+$ cd rutter-shopify-starter
 ```
 
 ## 2. Set up your environment variables

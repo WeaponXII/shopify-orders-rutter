@@ -113,8 +113,7 @@ export default function Home() {
     },
   };
   //const { open, ready, error } = useRutterLink(config);
-  console.log(orderList);
-  console.log(productList);
+
   const productIDs = productList.map((item) => {
     return item.id;
   });
@@ -125,8 +124,7 @@ export default function Home() {
       total: null,
     };
   });
-  console.log("Product ids:" + productIDs);
-  console.log(productNames);
+ 
   orderList.forEach((item) => {
     productNames.forEach((prod, index) => {
       if (
@@ -233,7 +231,7 @@ export default function Home() {
           <div>
             <hr />
             <div style={{ fontWeight: 500, fontSize: "1.5rem" }}>
-              Generate Dashboards
+              Generate 90-Day Order Breakdown
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", marginTop: 4 }}>
               <Button
@@ -242,9 +240,10 @@ export default function Home() {
                 onClick={() => {
                   setGeneratedData(true);
                 }}
+                variant={"success"}
                 disabled={dataLoading}
               >
-                Generate 90-Day Orders Breakdown
+                Generate Order Breakdown
               </Button>
             </div>
           </div>
