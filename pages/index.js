@@ -113,10 +113,6 @@ export default function Home() {
     },
   };
   //const { open, ready, error } = useRutterLink(config);
-
-  const productIDs = productList.map((item) => {
-    return item.id;
-  });
   const productNames = productList.map((item) => {
     return {
       name: item.name,
@@ -124,7 +120,7 @@ export default function Home() {
       total: null,
     };
   });
- 
+
   orderList.forEach((item) => {
     productNames.forEach((prod, index) => {
       if (
@@ -143,46 +139,58 @@ export default function Home() {
 
   console.log(productNames);
   const renderProductsGraph = () => {
+    const ordersExist = productList.length > 0 && orderList.length > 0;
     return (
       <div style={{ marginTop: 20, paddingBottom: 100 }}>
         <hr />
         <div>
-          <div align={"center"}>
-            <h5>90-Day Order Breakdown By Product</h5>
-          </div>
+          {ordersExist && (
+            <>
+              <div align={"center"}>
+                <h5>90-Day Order Breakdown By Product</h5>
+              </div>
 
-          <ResponsiveContainer width={"100%"} height={700}>
-            <BarChart
-              width={700}
-              height={500}
-              data={productNames}
-              layout={"vertical"}
-              margin={{
-                top: 5,
-                right: 10,
-                left: 10,
-                bottom: 5,
-              }}
-              name="Orders Breakdown"
-            >
-              <XAxis type={"number"} />
-              <CartesianGrid strokeDasharray="3 3" />
-              <YAxis
-                dataKey="name"
-                interval={0}
-                type={"category"}
-                width={180}
-              />
-              <Tooltip />
-              <Legend />
-              <Bar
-                dataKey="total"
-                name="Total Orders (All statuses)"
-                fill="#8884d8"
-                label
-              />
-            </BarChart>
-          </ResponsiveContainer>
+              <ResponsiveContainer width={"100%"} height={700}>
+                <BarChart
+                  width={700}
+                  height={500}
+                  data={productNames}
+                  layout={"vertical"}
+                  margin={{
+                    top: 5,
+                    right: 10,
+                    left: 10,
+                    bottom: 5,
+                  }}
+                  name="Orders Breakdown"
+                >
+                  <XAxis type={"number"} />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <YAxis
+                    dataKey="name"
+                    interval={0}
+                    type={"category"}
+                    width={180}
+                  />
+                  <Tooltip />
+                  <Legend />
+                  <Bar
+                    dataKey="total"
+                    name="Total Orders (All statuses)"
+                    fill="#8884d8"
+                    label
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </>
+          )}
+          {!ordersExist && (
+            <Alert style={{ marginTop: 4 }} variant="danger">
+              No orders and products were found for this store. To use this app
+              and generate a 90-Day order breakdown, connect a store with both
+              existing products and orders.
+            </Alert>
+          )}
         </div>
         <div style={{ marginTop: 20 }}></div>
       </div>
