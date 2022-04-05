@@ -45,6 +45,7 @@ export default function Home() {
           const { data } = response;
           setAccessToken(data.accessToken);
           setRutterConnected(true);
+          handleGetOrdersAndProducts(data.accessToken);
           try {
             localStorage?.setItem("rutteraccesstoken", data.accessToken);
           } catch (e) {}
@@ -88,7 +89,7 @@ export default function Home() {
     if (query.public_token) {
       // skip connect
       handleExchangeToken(query.public_token);
-      handleGetOrdersAndProducts(rutterAccessToken);
+      
     }
   }, [query]);
 
