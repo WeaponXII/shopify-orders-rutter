@@ -88,6 +88,7 @@ export default function Home() {
     if (query.public_token) {
       // skip connect
       handleExchangeToken(query.public_token);
+      handleGetOrdersAndProducts(rutterAccessToken);
     }
   }, [query]);
 
